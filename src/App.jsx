@@ -64,8 +64,8 @@ const App = () => {
 
   return (
     <section>
-      <div className="flex mt-20 justify-center gap-20">
-        <div className=" w-[30%]">
+      <div className="flex flex-col items-center lg:flex-row mt-20 md:justify-center gap-20">
+        <div className="w-[90%] md:w-[50%] lg:w-[30%]">
           <video ref={videoRef} className="rounded-lg"></video>
           <button
             className=" bg-gray-500 text-white rounded-md px-4 py-2 mt-5"
@@ -74,9 +74,9 @@ const App = () => {
             Take Photo
           </button>
         </div>
-        <div>
-          <canvas ref={photoRef} className="w-[60%] rounded-lg"></canvas>
-          <div className={hasPhoto == true ? "flex gap-20" : "hidden"}>
+        <div className="flex flex-col items-center">
+          <canvas ref={photoRef} className="w-[90%] mx-auto lg:w-[60%] rounded-lg"></canvas>
+          <div className={hasPhoto == true ? "flex gap-20" : "hidden" }>
             <button
               className="bg-green-500 text-white px-4 py-2 rounded-md mt-5"
               onClick={saveImage}
