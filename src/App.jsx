@@ -5,9 +5,10 @@ const App = () => {
   const photoRef = useRef(null);
 
   const [hasPhoto, setHasPhoto] = useState(null);
+  const [hasVideo,setHasVideo] = useState(null);
   const [image, setImage] = useState("");
 
-  const getVideo = () => {
+  const startVideo = () => {
     navigator.mediaDevices
       .getUserMedia({
         video: { width: 1920, height: 1080 },
@@ -16,10 +17,21 @@ const App = () => {
         let video = videoRef.current;
         video.srcObject = stream;
         video.play();
+        setHasVideo(true);
       })
       .catch((err) => {
         console.error(err);
       });
+  };
+
+  const stopVideo = () => {
+    const video = videoRef.current;
+    if (video.srcObject) {
+      video.srcObject.getTracks().forEach((track) => track.stop());
+      video.srcObject = null;
+      setHasVideo(false);
+    }
+    
   };
 
   const takePhoto = () => {
@@ -58,25 +70,40 @@ const App = () => {
     setHasPhoto(false);
   };
 
-  useEffect(() => {
-    getVideo();
-  }, [videoRef]);
-
   return (
     <section>
       <div className="flex flex-col items-center lg:flex-row mt-20 md:justify-center gap-20">
-        <div className="w-[90%] md:w-[50%] lg:w-[30%]">
-          <video ref={videoRef} className="rounded-lg"></video>
+        <div className={hasVideo == true ? "hidden" : "block"}>
           <button
-            className=" bg-gray-500 text-white rounded-md px-4 py-2 mt-5"
-            onClick={takePhoto}
+            className="bg-blue-500 text-white px-4 py-2 rounded-md"
+            onClick={startVideo}
           >
-            Take Photo
+            Start
           </button>
         </div>
+        <div className="w-[90%] md:w-[50%] lg:w-[30%]">
+          <video ref={videoRef} className="rounded-lg"></video>
+          <div className={hasVideo == true ? "flex gap-20" : "hidden"}>
+            <button
+              className=" bg-gray-500 text-white rounded-md px-4 py-2 mt-5"
+              onClick={takePhoto}
+            >
+              Take Photo
+            </button>
+            <button
+              className="bg-red-500 text-white px-4 py-2 rounded-md mt-5"
+              onClick={stopVideo}
+            >
+              Close
+            </button>
+          </div>
+        </div>
         <div className="flex flex-col items-center">
-          <canvas ref={photoRef} className="w-[90%] mx-auto lg:w-[60%] rounded-lg"></canvas>
-          <div className={hasPhoto == true ? "flex gap-20" : "hidden" }>
+          <canvas
+            ref={photoRef}
+            className="w-[90%] mx-auto lg:w-[60%] rounded-lg"
+          ></canvas>
+          <div className={hasPhoto == true ? "flex gap-20" : "hidden"}>
             <button
               className="bg-green-500 text-white px-4 py-2 rounded-md mt-5"
               onClick={saveImage}
